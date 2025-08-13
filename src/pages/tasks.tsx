@@ -10,9 +10,9 @@ export const Tasks: FC = (): ReactElement => {
             Tasks as on: Saturday, 1 Mar 2025
           </h1>
           <div className="flex justify-around">
-            <TasksCounter />
-            <TasksCounter />
-            <TasksCounter />
+            <TasksCounter status="todo" count={12} />
+            <TasksCounter status="inProgress" count={10} />
+            <TasksCounter status="completed" count={15} />
           </div>
         </div>
       </section>

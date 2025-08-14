@@ -19,7 +19,7 @@ export const Tasks: FC = (): ReactElement => {
           <Task
             title="Task Title"
             description="Task Description"
-            dueDate={new Date("2025-01-01T12:00:00.000Z")}
+            duedate={new Date("2025-01-01T12:00:00.000Z")}
             priority="normal"
             status="todo"
           />

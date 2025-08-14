@@ -30,8 +30,12 @@ import { cn } from "@/lib/utils";
 /* Datepicker imports */
 import { format } from "date-fns";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import z from "zod";
+import { useCreateTask } from "@/hooks/createTask.hook";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 export function CreateTaskForm() {
   const [date] = useState();
@@ -42,16 +46,25 @@ export function CreateTaskForm() {
     /*  To get rid of teh state change error add default values */
     defaultValues: {
       title: "",
+      status: "todo",
+      priority: "normal",
     },
   });
 
-  /** Function to handle what will happen when the form is submitted */
-  function onSubmit(values: { dueDate: unknown }) {
-    console.log(values);
+  const { mutate, isSuccess, isError, isPending } = useCreateTask();
 
-    const dueDate = JSON.stringify(values.dueDate);
-    console.log(dueDate);
+  /** Function to handle what will happen when the form is submitted */
+  function onSubmit(values: z.infer<typeof CreateTaskSchema>) {
+    const dueDate = values.dueDate.toISOString();
+    mutate({ ...values, duedate: dueDate });
   }
+
+  useEffect(() => {
+    if (isSuccess) toast("New Task Created");
+
+    form.reset();
+  }, [isSuccess]);
+
   return (
     <div>
       <h2 className="text-xl mb-4">Create a new task</h2>
@@ -201,6 +214,7 @@ export function CreateTaskForm() {
           </div>
         </form>
       </Form>
+      <Toaster />
     </div>
   );
 }

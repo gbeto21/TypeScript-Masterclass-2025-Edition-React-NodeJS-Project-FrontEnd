@@ -1,21 +1,25 @@
+import type { IResponse } from "@/types/response.interface";
+import type { ITask } from "@/types/task.interface";
 import { useQuery } from "@tanstack/react-query";
 
-const fetchTask = async () => {
-  const response = await fetch(`${import.meta.env.BASE_URL}`, {
+const fetchTasks = async (): Promise<IResponse<ITask[]>> => {
+  const url = new URL(`${import.meta.env.VITE_API_URL}tasks`);
+
+  const response = await fetch(url, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
-
   if (!response.ok) {
-    throw new Error("Network response not ok");
+    throw new Error("Network response was not ok");
   }
-
-  return await response.json();
+  return response.json();
 };
 
-export function useFetchTasks(params: {}) {
+export function useFetchTasks(params = {}) {
   return useQuery({
-    queryKey: ["fetchTasks"],
-    queryFn: fetchTask,
+    queryKey: ["fetchTasks", params],
+    queryFn: fetchTasks,
   });
 }

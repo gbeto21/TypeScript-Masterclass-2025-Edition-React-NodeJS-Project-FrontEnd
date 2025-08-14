@@ -1,4 +1,4 @@
-import type { FC, ReactElement } from "react";
+import { useEffect, useState, type FC, type ReactElement } from "react";
 import {
   Card,
   CardContent,
@@ -14,9 +14,13 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
 import type { ITask } from "@/types/task.interface";
+import { useUpdateTask } from "@/hooks/useUpdateTask.hook";
 
 export const Task: FC<ITask> = (props: ITask): ReactElement => {
-  const { title, description, duedate, status, priority } = props;
+  const { title, description, duedate, status, priority, _id } = props;
+
+  const [progress, setProgress] = useState(false);
+  const { mutate } = useUpdateTask();
 
   // Use toLocaleDateString with options for day, month, and year
   const formattedDate = new Date(duedate).toLocaleDateString("en-GB", {
@@ -24,6 +28,25 @@ export const Task: FC<ITask> = (props: ITask): ReactElement => {
     month: "short",
     year: "numeric",
   });
+
+  useEffect(() => {
+    if (status === "inProgress") {
+      setProgress(true);
+    }
+  }, [status]);
+
+  function handleProgressChange(value: boolean) {
+    setProgress(value);
+    if (_id) {
+      mutate({ _id: _id, status: value ? "inProgress" : "todo" });
+    }
+  }
+
+  function handleTaskCompleted() {
+    if (_id) {
+      mutate({ _id: _id, status: "completed" });
+    }
+  }
 
   return (
     <Card className="w-full mb-8">
@@ -56,15 +79,15 @@ export const Task: FC<ITask> = (props: ITask): ReactElement => {
       <CardFooter className="flex justify-between">
         <div className="flex flex-row items-center">
           <Switch
-            checked={status === "inProgress" ? true : false}
-            onCheckedChange={() => console.log("Switch Changed")}
+            checked={progress}
+            onCheckedChange={handleProgressChange}
             id="in-progress"
           />
           <Label className="ml-4" htmlFor="in-progress">
             In Progress
           </Label>
         </div>
-        <Button>Completed</Button>
+        <Button onClick={handleTaskCompleted}>Completed</Button>
       </CardFooter>
     </Card>
   );

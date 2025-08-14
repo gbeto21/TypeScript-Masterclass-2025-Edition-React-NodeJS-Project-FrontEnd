@@ -3,7 +3,7 @@ import type { ITask } from "@/types/task.interface";
 import { useMutation } from "@tanstack/react-query";
 
 const createTask = async (task: ITask) => {
-  const response = await fetch(`http://localhost:3001/tasks/create`, {
+  const response = await fetch(`${import.meta.env.BASE_URL}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(task),

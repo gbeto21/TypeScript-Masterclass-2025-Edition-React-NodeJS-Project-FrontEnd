@@ -1,3 +1,4 @@
+import type { IResponse } from "@/types/response.interface";
 import type { ITask } from "@/types/task.interface";
 import { useMutation } from "@tanstack/react-query";
 
@@ -18,7 +19,7 @@ const createTask = async (task: ITask) => {
 export const useCreateTask = () => {
   return useMutation({
     mutationFn: createTask,
-    onSuccess: (response) => console.log(response),
+    onSuccess: (response: IResponse<ITask>) => console.log(response),
     onError: (error) => console.error(error),
   });
 };

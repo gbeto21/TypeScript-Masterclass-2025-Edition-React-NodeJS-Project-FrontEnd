@@ -36,6 +36,7 @@ import z from "zod";
 import { useCreateTask } from "@/hooks/createTask.hook";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function CreateTaskForm() {
   const [date] = useState();
@@ -52,11 +53,16 @@ export function CreateTaskForm() {
   });
 
   const { mutate, isSuccess, isError, isPending } = useCreateTask();
+  const queryClient = useQueryClient();
 
   /** Function to handle what will happen when the form is submitted */
   function onSubmit(values: z.infer<typeof CreateTaskSchema>) {
     const dueDate = values.dueDate.toISOString();
     mutate({ ...values, duedate: dueDate });
+    queryClient.invalidateQueries({
+      queryKey: ["fetchTasks"],
+      refetchType: "all",
+    });
   }
 
   useEffect(() => {

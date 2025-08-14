@@ -6,6 +6,23 @@ import { TaskSidebar } from "@/components/taskSidebar/taskSidebar";
 import { useFetchTasks } from "@/hooks/useFetchTasks.hook";
 import type { ITask } from "@/types/task.interface";
 
+function todaysDate() {
+  const today = new Date();
+
+  // The Intl namespace is part of the ECMAScript Internationalization API, which provides language-sensitive string comparison, number formatting, and date and time formatting.
+  // Define options for toLocaleDateString()
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: "long", // full name of the day
+    day: "numeric", // numeric day
+    month: "short", // abbreviated month
+    year: "numeric", // numeric year
+  };
+
+  // Format the date
+  const formattedDate = today.toLocaleDateString("en-GB", options);
+  return formattedDate;
+}
+
 export const Tasks: FC = (): ReactElement => {
   const { data } = useFetchTasks();
 
@@ -14,7 +31,7 @@ export const Tasks: FC = (): ReactElement => {
       <section className="flex basis-2/3 justify-center">
         <div className="flex flex-col w-4/5 p-4">
           <h1 className="text-white font-bold text-2xl mb-8">
-            Tasks as on: Saturday, 1 Mar 2025
+            Tasks as on: {todaysDate()}
           </h1>
           <div className="flex justify-around mb-12">
             <TasksCounter

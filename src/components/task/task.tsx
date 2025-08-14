@@ -1,4 +1,6 @@
 import { useEffect, useState, type FC, type ReactElement } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+
 import {
   Card,
   CardContent,
@@ -7,7 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -21,7 +22,7 @@ export const Task: FC<ITask> = (props: ITask): ReactElement => {
 
   const [progress, setProgress] = useState(false);
   const { mutate } = useUpdateTask();
-
+  const queryClient = useQueryClient();
   // Use toLocaleDateString with options for day, month, and year
   const formattedDate = new Date(duedate).toLocaleDateString("en-GB", {
     day: "numeric",
@@ -40,12 +41,20 @@ export const Task: FC<ITask> = (props: ITask): ReactElement => {
     if (_id) {
       mutate({ _id: _id, status: value ? "inProgress" : "todo" });
     }
+    queryClient.invalidateQueries({
+      queryKey: ["fetchTasks"],
+      refetchType: "all",
+    });
   }
 
   function handleTaskCompleted() {
     if (_id) {
       mutate({ _id: _id, status: "completed" });
     }
+    queryClient.invalidateQueries({
+      queryKey: ["fetchTasks"],
+      refetchType: "all",
+    });
   }
 
   return (

@@ -64,7 +64,12 @@ export function CreateTaskForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Task Title" {...field} />
+                    <Input
+                      type="text"
+                      placeholder="Task Title"
+                      {...field}
+                      value={field.value ?? ""}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
